@@ -23,6 +23,7 @@ function App() {
     try { return JSON.parse(localStorage.getItem('eduaccess-profile')) || {}; } catch { return {}; }
   });
   const [saved, setSaved] = useState(false);
+  const [profileNotice, setProfileNotice] = useState('Guardado en este dispositivo.');
   const [mode, setMode] = useState('pdfdocx');
   const [file, setFile] = useState(null);
   const [status, setStatus] = useState('');
@@ -39,6 +40,36 @@ function App() {
     document.querySelector('.ea-site')?.classList.toggle('ea-profile-large', !!prefs.fontSize);
     document.querySelector('.ea-site')?.classList.toggle('ea-profile-spaced', !!prefs.spacing);
   }, [prefs.fontSize, prefs.spacing]);
+
+
+  useEffect(() => {
+    function handleExtensionMessage(event) {
+      const message = event.data || {};
+      if (message.source === 'EduAccessExtension' && message.type === 'EA_PROFILE_APPLIED') {
+        setProfileNotice('Perfil aplicado también en la extensión.');
+      }
+    }
+    window.addEventListener('message', handleExtensionMessage);
+    window.postMessage({ source: 'EduAccessWeb', type: 'EA_GET_EXTENSION_STATUS' }, '*');
+    return () => window.removeEventListener('message', handleExtensionMessage);
+  }, []);
+
+  function saveProfile() {
+    const profile = {
+      fontSize: Boolean(prefs.fontSize),
+      spacing: Boolean(prefs.spacing),
+      reader: Boolean(prefs.reader),
+      help: Boolean(prefs.help),
+      fontSizeValue: prefs.fontSize ? 125 : 110,
+      spacingValue: prefs.spacing ? 1.9 : 1.75
+    };
+
+    localStorage.setItem('eduaccess-profile', JSON.stringify(profile));
+    setPrefs(profile);
+    setSaved(true);
+    setProfileNotice('Perfil guardado en esta página. Si la extensión está instalada, también se aplicará.');
+    window.postMessage({ source: 'EduAccessWeb', type: 'EA_APPLY_PROFILE', profile }, '*');
+  }
 
   async function convert(e) {
     e.preventDefault();
@@ -76,7 +107,7 @@ function App() {
       }
 
       setAiStatus('Texto extraído. Generando resumen con Google AI Studio…');
-      const response = await fetch("/.netlify/functions/gemini-summary", {
+      const response = await fetch('/api/gemini-summary', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -160,7 +191,7 @@ function App() {
         <div className="ea-profile-card">
           <div className="ea-profile-heading"><div className="ea-profile-icon">✳</div><div><h3>Mi perfil de accesibilidad</h3><p>Elegí cómo te gusta interactuar.</p></div></div>
           <div className="ea-settings">{[['fontSize','Texto más grande'],['spacing','Más espacio'],['reader','Prefiero lectura simple'],['help','Quiero ayuda al navegar']].map(([key,label]) => <label className="ea-setting" key={key}><span><strong>{label}</strong></span><input aria-label={label} type="checkbox" checked={!!prefs[key]} onChange={() => { setPrefs({...prefs,[key]:!prefs[key]}); setSaved(false); }} /><span className="ea-toggle"/></label>)}</div>
-          <div className="ea-profile-bottom"><span>{saved ? 'Preferencias guardadas' : 'Guardado en este dispositivo.'}</span><button className="ea-button ea-button-small" onClick={() => { localStorage.setItem('eduaccess-profile', JSON.stringify(prefs)); setSaved(true); }}>Guardar perfil</button></div>
+          <div className="ea-profile-bottom"><span>{saved ? profileNotice : 'Guardado en este dispositivo.'}</span><button className="ea-button ea-button-small" onClick={saveProfile}>Guardar y aplicar perfil</button></div>
         </div>
       </section>
 

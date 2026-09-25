@@ -36,12 +36,54 @@
   ].join(',');
 
   function save(partial) {
-    chrome.storage.local.set(partial);
+    try {
+      if (typeof chrome !== 'undefined' && chrome.storage?.local) {
+        chrome.storage.local.set(partial);
+      }
+    } catch {}
   }
 
   function updateAndSave(partial) {
     apply(partial);
     save(partial);
+  }
+
+
+  function clampNumber(value, min, max, fallback) {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return fallback;
+    return Math.max(min, Math.min(max, number));
+  }
+
+  function profileToOptions(profile = {}) {
+    return {
+      fontSize: Boolean(profile.fontSize),
+      spacing: Boolean(profile.spacing),
+      reader: Boolean(profile.reader),
+      help: Boolean(profile.help),
+      fontSizeValue: clampNumber(profile.fontSizeValue, 90, 160, defaults.fontSizeValue),
+      spacingValue: clampNumber(profile.spacingValue, 1.2, 2.4, defaults.spacingValue)
+    };
+  }
+
+  function applyWebProfile(profile) {
+    const next = profileToOptions(profile);
+    updateAndSave(next);
+    window.postMessage({ source: 'EduAccessExtension', type: 'EA_PROFILE_APPLIED', options: next }, '*');
+  }
+
+  function handleWebProfileMessage(event) {
+    const message = event.data || {};
+    if (message.source !== 'EduAccessWeb') return;
+
+    if (message.type === 'EA_APPLY_PROFILE') {
+      applyWebProfile(message.profile || {});
+      return;
+    }
+
+    if (message.type === 'EA_GET_EXTENSION_STATUS') {
+      window.postMessage({ source: 'EduAccessExtension', type: 'EA_EXTENSION_READY' }, '*');
+    }
   }
 
   function normalize(text) {
@@ -778,6 +820,7 @@
   }
 
   window.addEventListener('message', handlePanelMessage);
+  window.addEventListener('message', handleWebProfileMessage);
 
   const observer = new MutationObserver((mutations) => {
     if (!options.fontSize && !options.spacing && !options.help) return;
@@ -786,17 +829,22 @@
     }
   });
 
-  chrome.storage.local.get(defaults, (stored) => {
-    apply(stored);
-    if (document.body) observer.observe(document.body, { childList: true, subtree: true });
-  });
+  if (typeof chrome !== 'undefined' && chrome.storage?.local) {
+    chrome.storage.local.get(defaults, (stored) => {
+      apply(stored);
+      if (document.body) observer.observe(document.body, { childList: true, subtree: true });
+    });
 
-  chrome.storage.onChanged.addListener((changes, area) => {
-    if (area !== 'local') return;
-    const next = {};
-    for (const [key, value] of Object.entries(changes)) {
-      if (key in defaults) next[key] = value.newValue;
-    }
-    apply(next);
-  });
+    chrome.storage.onChanged.addListener((changes, area) => {
+      if (area !== 'local') return;
+      const next = {};
+      for (const [key, value] of Object.entries(changes)) {
+        if (key in defaults) next[key] = value.newValue;
+      }
+      apply(next);
+    });
+  } else {
+    apply(defaults);
+    if (document.body) observer.observe(document.body, { childList: true, subtree: true });
+  }
 })();
