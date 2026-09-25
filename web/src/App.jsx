@@ -76,7 +76,7 @@ function App() {
       }
 
       setAiStatus('Texto extraído. Generando resumen con Google AI Studio…');
-      const response = await fetch('/api/gemini-summary', {
+      const response = await fetch("/.netlify/functions/gemini-summary", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
