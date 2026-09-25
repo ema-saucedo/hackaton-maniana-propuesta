@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="popup.css">
+  <title>EduAccess</title>
+</head>
+<body>
+  <header>
+    <div class="brand-row"><img src="icons/icon32.png" alt=""><span class="brand">EduAccess</span></div>
+    <small>Tu espacio de lectura</small>
+  </header>
+  <main>
+    <h1>Herramientas</h1>
+    <label><span>Tamaño de letra</span><input type="checkbox" data-option="fontSize"></label>
+    <label><span>Espaciado</span><input type="checkbox" data-option="spacing"></label>
+    <label><span>Modo lectura simple</span><input type="checkbox" data-option="reader"></label>
+    <label><span>Panel de ayuda</span><input type="checkbox" data-option="help"></label>
+    <label><span>Convertidor de documentos</span><input type="checkbox" data-option="converter"></label>
+
+    <section id="converter" hidden>
+      <h2>Convertir documento</h2>
+      <select id="mode" aria-label="Formato de conversión">
+        <option value="pdfdocx">PDF a Word</option>
+        <option value="docxpdf">Word a PDF</option>
+        <option value="pptxdocx">PowerPoint a Word</option>
+      </select>
+      <input id="file" type="file" accept=".pdf" aria-label="Documento">
+      <button id="convert">Convertir y descargar</button>
+      <p class="note">Solo texto · Máx. 15 MB · Sin conexión</p>
+      <hr>
+      <h2>Asistente de documentos</h2>
+      <input id="aiFile" type="file" accept=".pdf,.docx,.pptx" aria-label="Documento para resumir">
+      <button id="analyze">Resumir y explicar</button>
+      <p class="note">Demo local. Para IA real se usa backend + API.</p>
+      <div id="aiResult" class="result" hidden></div>
+    </section>
+    <p id="status" role="status"></p>
+  </main>
+  <script src="converter.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

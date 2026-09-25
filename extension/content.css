@@ -1,0 +1,230 @@
+:root{
+  --eduaccess-font-size:110%;
+  --eduaccess-reader-font:18px;
+  --eduaccess-line-height:1.75;
+  --ea-bg:#0d1712;
+  --ea-panel:#131e17;
+  --ea-card:#203c29;
+  --ea-border:#447551;
+  --ea-green:#7cff9b;
+  --ea-green-2:#b9f2ae;
+  --ea-text:#eaf3e9;
+}
+html.eduaccess-font body{font-size:var(--eduaccess-font-size)!important}
+html.eduaccess-spacing body{line-height:var(--eduaccess-line-height)!important;letter-spacing:.015em!important}
+html.eduaccess-spacing p,html.eduaccess-spacing li,html.eduaccess-spacing div,html.eduaccess-spacing span,html.eduaccess-spacing a,html.eduaccess-spacing button{line-height:var(--eduaccess-line-height)!important}
+
+#eduaccess-reader{
+  position:fixed!important;
+  inset:0!important;
+  z-index:2147483645!important;
+  overflow:auto!important;
+  box-sizing:border-box!important;
+  background:#f7f9f5!important;
+  color:#172419!important;
+  padding:0!important;
+  font:var(--eduaccess-reader-font)/var(--eduaccess-line-height) Georgia,serif!important;
+}
+#eduaccess-reader *{box-sizing:border-box!important}
+#eduaccess-reader .ea-reader-toolbar{
+  position:sticky;
+  top:0;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 18px;
+  background:#0d1712;
+  color:#eaf3e9;
+  border-bottom:1px solid #cfe6d1;
+  font:600 14px system-ui,sans-serif!important;
+}
+#eduaccess-reader .ea-reader-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+#eduaccess-reader .ea-reader-actions button,
+#eduaccess-reader .ea-close{
+  border:0;
+  background:#176a35;
+  color:white;
+  border-radius:9px;
+  padding:8px 12px;
+  font:700 13px system-ui,sans-serif;
+  cursor:pointer;
+}
+#eduaccess-reader .ea-reader-actions button:hover,#eduaccess-reader .ea-close:hover{background:#23974f}
+#eduaccess-reader .ea-reader-inner{
+  max-width:850px;
+  margin:0 auto;
+  padding:44px 24px 90px!important;
+}
+#eduaccess-reader h1,#eduaccess-reader h2,#eduaccess-reader h3{
+  line-height:1.25;
+  color:#142c19;
+  margin:1.4em 0 .6em;
+}
+#eduaccess-reader h1{font-size:2em;margin-top:0}
+#eduaccess-reader h2{font-size:1.5em}
+#eduaccess-reader h3{font-size:1.2em}
+#eduaccess-reader p,#eduaccess-reader li{margin:0 0 1.15em}
+#eduaccess-reader a{color:#276b37}
+
+#eduaccess-help{
+  all:initial;
+  position:fixed!important;
+  top:76px;
+  right:24px;
+  width:min(380px,calc(100vw - 28px));
+  max-height:min(80vh,720px);
+  display:flex;
+  flex-direction:column;
+  z-index:2147483647;
+  background:var(--ea-panel);
+  color:var(--ea-text);
+  border:1px solid var(--ea-border);
+  border-radius:18px;
+  box-shadow:0 18px 55px #0009;
+  font:14px/1.5 system-ui,sans-serif;
+  overflow:hidden;
+}
+#eduaccess-help *{box-sizing:border-box;font-family:system-ui,sans-serif}
+#eduaccess-help header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:linear-gradient(135deg,#203c29,#102016);
+  padding:14px 16px;
+  color:var(--ea-green-2);
+  cursor:move;
+  user-select:none;
+  font-weight:800;
+  border-bottom:1px solid #335c3f;
+}
+#eduaccess-help button{cursor:pointer}
+#eduaccess-help .ea-x{
+  background:#0e1913;
+  color:#ebf5e9;
+  border:1px solid #61886a;
+  border-radius:9px;
+  padding:5px 10px;
+  font-weight:700;
+}
+#eduaccess-help .ea-body{padding:15px;overflow:auto;min-height:0;flex:1}
+#eduaccess-help input[type="search"]{
+  width:100%;
+  border:1px solid #4c7154;
+  background:#101b14;
+  color:#fff;
+  border-radius:10px;
+  padding:11px 12px;
+  outline:none;
+  font-size:14px;
+}
+#eduaccess-help .ea-searchbar{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;
+  align-items:center;
+}
+#eduaccess-help .ea-searchbar button{
+  border:1px solid #60a875;
+  background:#176a35;
+  color:#fff;
+  border-radius:10px;
+  padding:11px 13px;
+  font-weight:800;
+}
+#eduaccess-help .ea-searchbar button:hover{background:#22964e}
+#eduaccess-help h3{
+  color:var(--ea-green-2);
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  margin:17px 0 8px;
+}
+#eduaccess-help .ea-section-note{color:#a9c7ad;font-size:12px;margin:6px 0 0}
+#eduaccess-help .ea-item{
+  display:block;
+  width:100%;
+  text-align:left;
+  background:#223428;
+  color:#eff8ec;
+  border:1px solid #3b5941;
+  border-radius:11px;
+  padding:9px 11px;
+  margin:7px 0;
+  font-size:13px;
+  line-height:1.4;
+  overflow-wrap:anywhere;
+}
+#eduaccess-help .ea-item:hover,#eduaccess-help .ea-item.active{border-color:var(--ea-green);box-shadow:0 0 0 2px rgba(124,255,155,.14)}
+#eduaccess-help .ea-empty{color:#b7cbbb;font-size:12px}
+#eduaccess-help .ea-controls{
+  border-top:1px solid #335c3f;
+  background:#101b14;
+  padding:13px 15px 15px;
+  position:sticky;
+  bottom:0;
+  z-index:1;
+}
+#eduaccess-help .ea-body{scrollbar-width:thin;}
+#eduaccess-help .ea-controls-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  color:var(--ea-green-2);
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  margin-bottom:10px;
+}
+#eduaccess-help .ea-range-row{
+  display:grid;
+  grid-template-columns:72px 1fr 46px;
+  gap:10px;
+  align-items:center;
+  color:#dcefe0;
+  font-size:12px;
+  margin:8px 0;
+}
+#eduaccess-help input[type="range"]{width:100%;accent-color:var(--ea-green)}
+#eduaccess-help .ea-mini-button{
+  border:1px solid #4c7154;
+  background:#203c29;
+  color:#eaf3e9;
+  border-radius:8px;
+  padding:6px 8px;
+}
+#eduaccess-help .ea-mark-status{font-size:12px;color:#a9c7ad;margin:8px 0 0;min-height:18px}
+
+.ea-mark{
+  outline:3px solid #37ad60!important;
+  background:#dcf7d7!important;
+  scroll-margin-top:90px;
+  border-radius:6px;
+}
+#eduaccess-reader .ea-mark{
+  outline:3px solid #339257!important;
+  background:#d4f0d2!important;
+}
+
+/* Fix robusto: el panel vive dentro de un iframe para que la página no bloquee el input. */
+#eduaccess-help-frame{
+  position:fixed!important;
+  top:76px!important;
+  right:24px!important;
+  width:min(420px,calc(100vw - 28px))!important;
+  height:min(80vh,720px)!important;
+  border:0!important;
+  background:transparent!important;
+  z-index:2147483647!important;
+}
+
+/* Marcar sin romper diseños oscuros o títulos grandes. */
+.ea-mark{
+  outline:4px solid #37ad60!important;
+  box-shadow:0 0 0 5px rgba(124,255,155,.28)!important;
+  background:rgba(124,255,155,.12)!important;
+  scroll-margin-top:90px!important;
+  border-radius:6px!important;
+}
