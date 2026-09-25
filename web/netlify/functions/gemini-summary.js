@@ -68,7 +68,7 @@ export async function handler(event) {
   }
 
   const clipped = text.slice(0, MAX_TEXT_CHARS);
-  const model = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
+  const model = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
   const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`;
 
   const prompt = `Actuá como asistente educativo de accesibilidad. Tu objetivo es ayudar a un estudiante a entender el documento sin inventar información.
