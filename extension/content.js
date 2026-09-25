@@ -61,6 +61,14 @@
     return Boolean(el?.closest?.('#eduaccess-help-frame, #eduaccess-reader'));
   }
 
+  function isInsideReaderContent(el) {
+    return Boolean(reader && el?.closest?.('#eduaccess-reader .ea-reader-inner'));
+  }
+
+  function canUseEduAccessElementForSearch(el) {
+    return isInsideReaderContent(el) || !isEduAccessElement(el);
+  }
+
   function isVisible(el) {
     if (!el || !(el instanceof Element)) return false;
     const style = getComputedStyle(el);
@@ -143,12 +151,17 @@
   }
 
   function canSearch(el) {
+    const insideReader = isInsideReaderContent(el);
+    const blockedSelector = insideReader
+      ? 'script,style,noscript,canvas,svg,video,audio,#eduaccess-help-frame'
+      : searchExcluded;
+
     return Boolean(
       el &&
       el instanceof Element &&
       hasUsefulText(el) &&
-      !el.closest?.(searchExcluded) &&
-      !isEduAccessElement(el) &&
+      !el.closest?.(blockedSelector) &&
+      canUseEduAccessElementForSearch(el) &&
       isVisible(el)
     );
   }
@@ -432,10 +445,16 @@
   function collectPanelData(query = '') {
     const root = source();
     const titles = collectDeepElements(root, 'h1,h2,h3,h4,[role="heading"]')
-      .filter((el) => normalize(el.innerText || el.textContent) && !isEduAccessElement(el) && isVisible(el))
+      .filter((el) => normalize(el.innerText || el.textContent) && canUseEduAccessElementForSearch(el) && isVisible(el))
       .slice(0, 50);
     const links = collectDeepElements(root, 'a[href],button,[role="button"]')
-      .filter((el) => normalize(el.innerText || el.textContent || el.getAttribute('aria-label')) && !el.closest?.(excluded) && !isEduAccessElement(el) && isVisible(el))
+      .filter((el) => {
+        const insideReader = isInsideReaderContent(el);
+        return normalize(el.innerText || el.textContent || el.getAttribute('aria-label')) &&
+          (insideReader || !el.closest?.(excluded)) &&
+          canUseEduAccessElementForSearch(el) &&
+          isVisible(el);
+      })
       .slice(0, 60);
     const cleanQuery = normalize(query);
     const results = cleanQuery.length >= 2 ? findInCurrentPage(cleanQuery) : [];
